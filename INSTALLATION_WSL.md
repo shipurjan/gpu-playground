@@ -2,6 +2,8 @@
 
 This guide walks you through installing the CUDA toolkit to compile and run `.cu` files on Windows Subsystem for Linux 2 (WSL2).
 
+**Note:** This guide is for **Debian/Ubuntu-based distributions** in WSL2 (Ubuntu 22.04, Debian, etc.). For other distributions (Fedora, Arch, etc.), check the [NVIDIA CUDA Downloads page](https://developer.nvidia.com/cuda-downloads) for distribution-specific instructions.
+
 ## Prerequisites
 
 Before starting, ensure you have:
@@ -38,7 +40,9 @@ sudo apt-get --purge remove "*cuda*" "*cublas*" "*cufft*" "*cufile*" "*curand*" 
 sudo apt-get autoremove
 ```
 
-### Install CUDA Toolkit (Ubuntu 22.04 example)
+**Note:** If you see errors like "Unable to locate package" or "package is not installed", that's normal - it just means those packages aren't on your system. You can proceed to the next step.
+
+### Install CUDA Toolkit 13.1
 ```bash
 # Update package lists
 sudo apt-get update
@@ -51,20 +55,22 @@ wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/
 sudo mv cuda-wsl-ubuntu.pin /etc/apt/preferences.d/cuda-repository-pin-600
 
 # Download and install CUDA repository key
-wget https://developer.download.nvidia.com/compute/cuda/12.6.3/local_installers/cuda-repo-wsl-ubuntu-12-6-local_12.6.3-1_amd64.deb
-sudo dpkg -i cuda-repo-wsl-ubuntu-12-6-local_12.6.3-1_amd64.deb
-sudo cp /var/cuda-repo-wsl-ubuntu-12-6-local/cuda-*-keyring.gpg /usr/share/keyrings/
+wget https://developer.download.nvidia.com/compute/cuda/13.1.0/local_installers/cuda-repo-wsl-ubuntu-13-1-local_13.1.0-1_amd64.deb
+sudo dpkg -i cuda-repo-wsl-ubuntu-13-1-local_13.1.0-1_amd64.deb
+sudo cp /var/cuda-repo-wsl-ubuntu-13-1-local/cuda-*-keyring.gpg /usr/share/keyrings/
 
 # Update and install CUDA
 sudo apt-get update
-sudo apt-get install -y cuda-toolkit-12-6
+sudo apt-get -y install cuda-toolkit-13-1
 ```
 
-**Note:** For other Ubuntu versions or different CUDA versions, check the [NVIDIA CUDA Downloads page](https://developer.nvidia.com/cuda-downloads) and select:
+**Note about `cuda-toolkit-13-1`:** This installs CUDA 13.1 specifically and prevents automatic upgrades to 13.2, 14.0, etc. If you want automatic updates to the latest version, use `cuda-toolkit` instead (not recommended for learning).
+
+**For other CUDA versions:** Check the [NVIDIA CUDA Downloads page](https://developer.nvidia.com/cuda-downloads) and select:
 - Operating System: Linux
 - Architecture: x86_64
-- Distribution: WSL-Ubuntu
-- Version: (your version)
+- Distribution: **WSL-Ubuntu** (even if you're using Debian)
+- Version: 2.0
 - Installer Type: deb (local)
 
 ## Step 3: Configure PATH
@@ -73,15 +79,15 @@ Add CUDA to your PATH so you can use `nvcc` from anywhere.
 
 ### For Bash (default)
 ```bash
-echo 'export PATH=/usr/local/cuda-12.6/bin:$PATH' >> ~/.bashrc
-echo 'export LD_LIBRARY_PATH=/usr/local/cuda-12.6/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc
+echo 'export PATH=/usr/local/cuda-13.1/bin:$PATH' >> ~/.bashrc
+echo 'export LD_LIBRARY_PATH=/usr/local/cuda-13.1/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc
 source ~/.bashrc
 ```
 
 ### For Zsh
 ```bash
-echo 'export PATH=/usr/local/cuda-12.6/bin:$PATH' >> ~/.zshrc
-echo 'export LD_LIBRARY_PATH=/usr/local/cuda-12.6/lib64:$LD_LIBRARY_PATH' >> ~/.zshrc
+echo 'export PATH=/usr/local/cuda-13.1/bin:$PATH' >> ~/.zshrc
+echo 'export LD_LIBRARY_PATH=/usr/local/cuda-13.1/lib64:$LD_LIBRARY_PATH' >> ~/.zshrc
 source ~/.zshrc
 ```
 
@@ -96,9 +102,9 @@ nvcc --version
 You should see output like:
 ```
 nvcc: NVIDIA (R) Cuda compiler driver
-Copyright (c) 2005-2024 NVIDIA Corporation
+Copyright (c) 2005-2023 NVIDIA Corporation
 Built on ...
-Cuda compilation tools, release 12.6, V12.6.X
+Cuda compilation tools, release 13.1, V13.1.X
 ```
 
 ## Step 5: Test with Hello World Example
@@ -128,7 +134,7 @@ If you see this, congratulations! CUDA is working correctly.
 - Ensure your Windows version supports GPU passthrough (21H2+)
 
 ### `nvcc: command not found`
-- Check if CUDA is installed: `ls /usr/local/cuda-12.6/bin/nvcc`
+- Check if CUDA is installed: `ls /usr/local/cuda-13.1/bin/nvcc`
 - If the file exists, your PATH is not set correctly - repeat Step 3
 - If the file doesn't exist, CUDA installation failed - repeat Step 2
 
@@ -147,7 +153,7 @@ ls /usr/local/cuda*
 To change the symlink to a different version:
 ```bash
 sudo rm /usr/local/cuda
-sudo ln -s /usr/local/cuda-12.6 /usr/local/cuda
+sudo ln -s /usr/local/cuda-13.1 /usr/local/cuda
 ```
 
 ### GPU not detected (`cuda runtime error`)
@@ -157,7 +163,7 @@ sudo ln -s /usr/local/cuda-12.6 /usr/local/cuda
 
 ### Compilation works but execution fails
 If `nvcc` compiles successfully but running the program gives errors:
-- Check GPU compatibility: CUDA 12.x requires compute capability 5.0+
+- Check GPU compatibility: CUDA 13.x requires compute capability 5.0+
 - Verify your GPU model: `nvidia-smi --query-gpu=name,compute_cap --format=csv`
 
 ## Additional Resources
