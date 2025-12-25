@@ -3,13 +3,28 @@
 #include <string.h>  // for memcpy
 
 /*
- * This example demonstrates memory management in C and CUDA.
- * We'll create an array, copy it, and free it - first on CPU, then on GPU.
+ * ============================================================================
+ * KEY CONCEPTS
+ * ============================================================================
+ * - malloc/free work on CPU memory (system RAM)
+ * - cudaMalloc/cudaFree work on GPU memory (VRAM)
+ * - memcpy copies within CPU memory
+ * - cudaMemcpy copies BETWEEN CPU and GPU memory
+ * - CPU cannot directly access GPU memory (separate address spaces)
  */
 
 // Simple kernel that doubles each element in an array
 __global__ void doubleArray(int* array, int size) {
+    // threadIdx.x = unique thread ID within a block (0, 1, 2, 3, 4...)
+    // Each thread gets a different ID so they can work on different array elements
     int i = threadIdx.x;
+    printf("  [GPU Thread %d] Processing array[%d] = %d -> %d\n",
+           i, i, array[i], array[i] * 2);
+
+    // Safety check: Prevent out-of-bounds access if more threads than elements
+    // Example: If someone launches <<<1, 10>>> but size=5, threads 5-9 skip work
+    // In this example we launch exactly 5 threads for 5 elements, so this seems
+    // redundant, but it's standard practice to always include this bounds check
     if (i < size) {
         array[i] = array[i] * 2;
     }
@@ -167,19 +182,195 @@ int main() {
 }
 
 /*
- * HOW TO COMPILE AND RUN:
+ * ============================================================================
+ * FREQUENTLY ASKED QUESTIONS
+ * ============================================================================
  *
- * nvcc 03-memory-basics.cu -o 03-memory-basics
- * ./03-memory-basics
+ * 1. How does threadIdx work? Is the kernel called once or multiple times?
+ * -------------------------------------------------------------------------
+ * When you launch a kernel with <<<1, 5>>>, the function runs 5 times IN PARALLEL.
  *
- * EXPECTED OUTPUT:
- * Shows step-by-step memory allocation, copying, and deallocation
- * on both CPU and GPU, with memory addresses and values.
+ * It's NOT called 5 times sequentially like a for-loop. Instead:
+ * - CUDA launches 5 threads simultaneously
+ * - Each thread executes the SAME function code
+ * - Each thread gets a DIFFERENT threadIdx.x value (0, 1, 2, 3, 4)
+ * - threadIdx.x is automatically assigned by the GPU
+ * - threadIdx.x is local to each thread (each sees their own value)
  *
- * KEY CONCEPTS:
- * - malloc/free work on CPU memory (system RAM)
- * - cudaMalloc/cudaFree work on GPU memory (VRAM)
- * - memcpy copies within CPU memory
- * - cudaMemcpy copies BETWEEN CPU and GPU memory
- * - CPU cannot directly access GPU memory (separate address spaces)
+ * Example:
+ *   doubleArray<<<1, 5>>>(gpu_array, 5);
+ *
+ * What happens:
+ *   Thread 0: runs doubleArray(), sees threadIdx.x = 0, processes array[0]
+ *   Thread 1: runs doubleArray(), sees threadIdx.x = 1, processes array[1]
+ *   Thread 2: runs doubleArray(), sees threadIdx.x = 2, processes array[2]
+ *   Thread 3: runs doubleArray(), sees threadIdx.x = 3, processes array[3]
+ *   Thread 4: runs doubleArray(), sees threadIdx.x = 4, processes array[4]
+ *   ^ All of these run AT THE SAME TIME (in parallel)
+ *
+ * This is why GPUs are fast: Instead of processing 5 elements one-by-one,
+ * they process all 5 simultaneously using different threads.
+ *
+ * Think of it like this:
+ *   CPU for-loop: One worker processes 5 items sequentially
+ *   GPU kernel:   5 workers process 5 items simultaneously
+ *
+ *
+ * 2. What are the limitations of GPU threads? Can they do any work CPU threads can?
+ * ---------------------------------------------------------------------------------
+ * GPU threads CAN execute the same code as CPU threads (loops, conditionals, math),
+ * but there are important performance differences and some limitations.
+ *
+ * You can write almost ANY code, but some patterns are MUCH slower on GPU:
+ *
+ * **What GPU threads CAN do:**
+ * - Loops: for/while loops work fine
+ * - Branching: if/else statements work
+ * - Complex math: floating point, trigonometry, etc.
+ * - Function calls: calling other __device__ functions
+ * - Limited recursion (modern CUDA, but not recommended)
+ *
+ * **Performance characteristics:**
+ *
+ * 1. BRANCHING is expensive (warp divergence):
+ *    GPU threads execute in groups of 32 called "warps"
+ *    All threads in a warp run the SAME instruction simultaneously
+ *
+ *    if (threadIdx.x % 2 == 0) {
+ *        // expensive computation A
+ *    } else {
+ *        // expensive computation B
+ *    }
+ *
+ *    Result: GPU must run BOTH branches. Threads not taking a branch sit idle.
+ *    You lose 50% efficiency here. Branching is allowed but hurts performance.
+ *
+ * 2. LOOPS with different iteration counts hurt performance:
+ *    If thread 0 loops 10 times and thread 1 loops 1000 times,
+ *    thread 0 sits idle waiting for thread 1 to finish.
+ *
+ * 3. SEQUENTIAL DEPENDENCIES are bad:
+ *    GPUs excel at parallel work, struggle with sequential chains.
+ *    Bad: result[i] = result[i-1] + 1  (each step depends on previous)
+ *    Good: result[i] = input[i] * 2     (all independent)
+ *
+ * **"Simple work" is misleading terminology:**
+ * - It doesn't mean "easy math" - GPUs can do complex calculations
+ * - It means "PARALLEL work" - same operation on many data elements
+ * - Example of complex GPU work: physics simulation on 100,000 particles
+ * - Each particle's calculation can be complex, but they're independent
+ *
+ * **CPU vs GPU thread comparison:**
+ *   CPU (8-16 threads):
+ *   - Heavy threads (large stack, lots of cache)
+ *   - Great at sequential logic, branching, unpredictable control flow
+ *   - Example: traversing a tree, parsing JSON, complex business logic
+ *
+ *   GPU (thousands of threads):
+ *   - Lightweight threads (small stack, less cache per thread)
+ *   - Great at doing the SAME operation on massive datasets
+ *   - Example: image processing, matrix math, array operations
+ *
+ * **When to use GPU:**
+ * ✓ Same operation on massive amounts of data
+ * ✓ Minimal branching or predictable branches
+ * ✓ Independent computations (no dependencies between elements)
+ * ✓ Enough work to justify CPU→GPU copy overhead
+ *
+ * **When to use CPU:**
+ * ✓ Irregular/unpredictable branching
+ * ✓ Sequential dependencies (step N needs result from step N-1)
+ * ✓ Tree/graph traversal, linked lists
+ * ✓ Small datasets (GPU copy overhead not worth it)
+ *
+ *
+ * 3. Is there threadIdx.y and threadIdx.z? What other built-in variables exist?
+ * ------------------------------------------------------------------------------
+ * Yes! threadIdx is a 3D structure with .x, .y, and .z components.
+ * CUDA provides several built-in variables for thread organization:
+ *
+ * **Thread identification:**
+ * - threadIdx.x, threadIdx.y, threadIdx.z
+ *   Your thread's position within its block (0 to blockDim-1)
+ *
+ * **Block identification:**
+ * - blockIdx.x, blockIdx.y, blockIdx.z
+ *   Your block's position within the grid (0 to gridDim-1)
+ *
+ * **Dimensions:**
+ * - blockDim.x, blockDim.y, blockDim.z
+ *   Number of threads per block in each dimension
+ *
+ * - gridDim.x, gridDim.y, gridDim.z
+ *   Number of blocks in the grid in each dimension
+ *
+ * **Why use 2D/3D organization?**
+ * Match your thread layout to your data structure:
+ *
+ * 1D (arrays):
+ *   int data[1000];
+ *   kernel<<<10, 100>>>();  // 10 blocks, 100 threads each
+ *   int i = blockIdx.x * blockDim.x + threadIdx.x;  // Global index
+ *   data[i] = ...;
+ *
+ * 2D (images/matrices):
+ *   int image[HEIGHT][WIDTH];
+ *   dim3 blocks(16, 16);    // 16x16 threads per block
+ *   dim3 grid(WIDTH/16, HEIGHT/16);
+ *   kernel<<<grid, blocks>>>();
+ *
+ *   In kernel:
+ *   int x = blockIdx.x * blockDim.x + threadIdx.x;  // Column
+ *   int y = blockIdx.y * blockDim.y + threadIdx.y;  // Row
+ *   image[y][x] = ...;
+ *
+ * 3D (volumes, 3D simulations):
+ *   int volume[DEPTH][HEIGHT][WIDTH];
+ *   dim3 blocks(8, 8, 8);   // 8x8x8 = 512 threads per block
+ *   dim3 grid(WIDTH/8, HEIGHT/8, DEPTH/8);
+ *   kernel<<<grid, blocks>>>();
+ *
+ *   In kernel:
+ *   int x = blockIdx.x * blockDim.x + threadIdx.x;
+ *   int y = blockIdx.y * blockDim.y + threadIdx.y;
+ *   int z = blockIdx.z * blockDim.z + threadIdx.z;
+ *   volume[z][y][x] = ...;
+ *
+ * **Our example uses only threadIdx.x because:**
+ * - We have a 1D array (5 elements)
+ * - We launch with <<<1, 5>>> = 1 block, 5 threads in x-dimension
+ * - threadIdx.y and threadIdx.z would both be 0 (unused dimensions)
+ *
+ * You'll see 2D/3D thread organization in image processing and matrix examples.
+ *
+ *
+ * 4. How can I tell if a pointer's address is on CPU or GPU?
+ * ------------------------------------------------------------
+ * You can't easily tell by looking at the address value alone. Here's why:
+ *
+ * CPU and GPU have SEPARATE address spaces:
+ * - A GPU pointer (like 0x7f8b4c000000) doesn't map to CPU memory
+ * - A CPU pointer (like 0x7ffc0726b6c4) doesn't map to GPU memory
+ * - They're completely independent memory systems
+ *
+ * Common approaches to track pointer locations:
+ *
+ * 1. Naming convention (recommended):
+ *    int* h_array;  // h_ prefix = host (CPU)
+ *    int* d_array;  // d_ prefix = device (GPU)
+ *
+ * 2. What happens if you get it wrong:
+ *    int* gpu_ptr;
+ *    cudaMalloc(&gpu_ptr, size);
+ *    int value = *gpu_ptr;  // ❌ CRASH! Can't dereference GPU pointer from CPU
+ *
+ *    int* cpu_ptr = malloc(size);
+ *    cudaMemcpy(result, cpu_ptr, size, cudaMemcpyDeviceToHost);  // ❌ Wrong direction
+ *
+ * 3. Programmatic check (advanced):
+ *    cudaPointerAttributes attrs;
+ *    cudaPointerGetAttributes(&attrs, ptr);
+ *    // Check attrs.type to see if it's host or device memory
+ *
+ * Best practice: Use h_ and d_ prefixes consistently to avoid confusion.
  */

@@ -1,8 +1,15 @@
 #include <stdio.h>
 
 /*
- * This example explains pointers in C - the foundation for understanding CUDA memory.
- * Pointers are variables that store memory addresses.
+ * ============================================================================
+ * KEY CONCEPTS
+ * ============================================================================
+ * - & (address-of) gets the memory address of a variable
+ * - * (dereference) gets the value at a memory address
+ * - int* is a pointer that stores an address
+ * - int** is a pointer to a pointer
+ * - Pass by reference allows functions to modify original variables
+ * - CUDA uses pointers because GPU and CPU have separate memory
  */
 
 // ============================================================
@@ -138,23 +145,3 @@ int main() {
 
     return 0;
 }
-
-/*
- * HOW TO COMPILE AND RUN:
- *
- * nvcc 02-pointer-basics.cu -o 02-pointer-basics
- * ./02-pointer-basics
- *
- * EXPECTED OUTPUT:
- * Detailed visualization of pointers, addresses, and values
- * Demonstrations of pass-by-value vs pass-by-reference
- * Explanation of why CUDA uses pointer-to-pointer syntax
- *
- * KEY CONCEPTS:
- * - & (address-of) gets the memory address of a variable
- * - * (dereference) gets the value at a memory address
- * - int* is a pointer that stores an address
- * - int** is a pointer to a pointer
- * - Pass by reference allows functions to modify original variables
- * - CUDA uses pointers because GPU and CPU have separate memory
- */
