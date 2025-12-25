@@ -34,7 +34,8 @@ int main() {
     cpu_array[2] = 30;
     cpu_array[3] = 40;
     cpu_array[4] = 50;
-    printf("   Values: [10, 20, 30, 40, 50]\n\n");
+    printf("   Values: [%d, %d, %d, %d, %d]\n\n",
+           cpu_array[0], cpu_array[1], cpu_array[2], cpu_array[3], cpu_array[4]);
 
     // ============================================================
     // memcpy() - Copy memory from one CPU location to another
@@ -86,7 +87,8 @@ int main() {
     cudaMemcpy(gpu_array, cpu_array, 5 * sizeof(int), cudaMemcpyHostToDevice);
     printf("5. cudaMemcpy() copied data from CPU to GPU\n");
     printf("   Direction: Host (CPU) -> Device (GPU)\n");
-    printf("   Sent: [10, 20, 30, 40, 50]\n\n");
+    printf("   Sent: [%d, %d, %d, %d, %d]\n\n",
+           cpu_array[0], cpu_array[1], cpu_array[2], cpu_array[3], cpu_array[4]);
 
     // Run kernel to double the values on GPU
     printf("6. Launching kernel to double values on GPU...\n");
