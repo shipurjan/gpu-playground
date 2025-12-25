@@ -14,7 +14,7 @@ webgpu/        # WebGPU examples (TypeScript/JavaScript)
 
 **CUDA:**
 - NVIDIA GPU
-- CUDA Toolkit installed
+- CUDA Toolkit installed ([WSL2 installation guide](INSTALLATION_WSL.md))
 - C/C++ compiler
 
 **WebGPU:**
