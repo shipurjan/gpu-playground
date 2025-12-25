@@ -1,0 +1,17 @@
+{
+  "name": "webgpu-examples",
+  "version": "1.0.0",
+  "description": "WebGPU learning examples",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "serve": "http-server -p 8000 -o",
+    "dev": "concurrently \"npm run watch\" \"npm run serve\""
+  },
+  "devDependencies": {
+    "@webgpu/types": "0.1.68",
+    "concurrently": "9.2.1",
+    "http-server": "14.1.1",
+    "typescript": "5.9.3"
+  }
+}
