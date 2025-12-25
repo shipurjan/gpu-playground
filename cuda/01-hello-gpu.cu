@@ -1,5 +1,15 @@
 #include <stdio.h>
 
+/*
+ * ============================================================================
+ * KEY CONCEPTS
+ * ============================================================================
+ * - __global__ = function that runs on GPU
+ * - <<<1, 1>>> = launch config (1 block, 1 thread)
+ * - cudaDeviceSynchronize() = wait for GPU to finish
+ * - Host = CPU, Device = GPU (separate memory)
+ */
+
 // __global__ means this function runs on the GPU (device)
 // and can be called from CPU (host)
 __global__ void helloFromGPU() {
@@ -23,23 +33,6 @@ int main() {
 
     return 0;
 }
-
-/*
- * HOW TO COMPILE AND RUN:
- *
- * nvcc 01-hello-gpu.cu -o 01-hello-gpu
- * ./01-hello-gpu
- *
- * EXPECTED OUTPUT:
- * Hello from CPU!
- * Hello from GPU thread!
- * Back to CPU!
- *
- * KEY CONCEPTS:
- * - __global__ = function that runs on GPU
- * - <<<1, 1>>> = launch config (1 block, 1 thread)
- * - cudaDeviceSynchronize() = wait for GPU to finish
- */
 
 /*
  * ============================================================================

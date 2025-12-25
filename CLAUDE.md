@@ -39,13 +39,36 @@ This is a learning repository where the user is teaching themselves GPU computin
 
 **Naming convention**: `<number>-<descriptive-name>.<extension>`
 
-**Documentation**: FAQs are documented in comment blocks at the bottom of each source file
+**Documentation**: FAQs are documented in comment blocks at the end of each source file
 
 ## FAQ Documentation Format
 
-When the user asks questions about a specific example, **add a FAQ section at the bottom of the source file** in a comment block:
+Documentation is placed in each source file in this order:
+
+1. **Includes** (`#include` statements)
+2. **KEY CONCEPTS** - Brief bullet points of core concepts
+3. **Code** - Functions and main()
+4. **FAQ** - Detailed Q&A section (if present)
+
+Example structure:
 
 ```c
+#include <stdio.h>
+
+/*
+ * ============================================================================
+ * KEY CONCEPTS
+ * ============================================================================
+ * - __global__ = function that runs on GPU
+ * - <<<1, 1>>> = launch config (1 block, 1 thread)
+ * - cudaDeviceSynchronize() = wait for GPU to finish
+ */
+
+// Code starts here
+__global__ void kernel() { }
+
+int main() { }
+
 /*
  * ============================================================================
  * FREQUENTLY ASKED QUESTIONS
@@ -64,13 +87,6 @@ When the user asks questions about a specific example, **add a FAQ section at th
  * - First number (1) = number of blocks
  * - Second number (8) = threads per block
  * - Total threads = 1 × 8 = 8 threads
- *
- *
- * 3. Why do we need to copy memory between CPU and GPU?
- * ------------------------------------------------------
- * The CPU and GPU have separate physical RAM. CPU uses system RAM, GPU uses
- * VRAM. They can't access each other's memory directly, so we must explicitly
- * copy data between them.
  */
 ```
 
