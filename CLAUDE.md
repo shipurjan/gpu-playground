@@ -24,54 +24,54 @@ This is a learning repository where the user is teaching themselves GPU computin
 
 ### CUDA Examples (cuda/)
 ```
-
 01-single-thread.cu
-01-single-thread.faq.md
-
 02-parallel-add.cu
-02-parallel-add.faq.md
 03-thread-indexing.cu
-03-thread-indexing.faq.md
 ...
-
 ```
 
 ### WebGPU Examples (webgpu/)
 ```
 01-triangle.html
-01-triangle.faq.md
 02-compute-shader.ts
-
-02-compute-shader.faq.md
 ...
 ```
 
 **Naming convention**: `<number>-<descriptive-name>.<extension>`
 
-## FAQ File Format
+**Documentation**: FAQs are documented in comment blocks at the bottom of each source file
 
-When the user asks questions about a specific example, **edit the corresponding `.faq.md` file** and add their questions in this format:
+## FAQ Documentation Format
 
-```markdown
-# 02-parallel-add.cu FAQ
+When the user asks questions about a specific example, **add a FAQ section at the bottom of the source file** in a comment block:
 
-## 1. Why is the function void instead of returning a value?
-
-In C, when working with GPU memory, you can't return GPU pointers directly. Instead, you pass an output pointer as a parameter and modify it in place. This is standard C practice for avoiding memory allocation issues.
-
-## 2. What does `<<<1, 8>>>` mean?
-
-This is CUDA's kernel launch syntax:
-- First number (1) = number of blocks
-- Second number (8) = threads per block
-- Total threads = 1 × 8 = 8 threads
-
-
-## 3. Why do we need to copy memory between CPU and GPU?
-
-
-The CPU and GPU have separate physical RAM. CPU uses system RAM, GPU uses VRAM. They can't access each other's memory directly, so we must explicitly copy data between them.
-
+```c
+/*
+ * ============================================================================
+ * FREQUENTLY ASKED QUESTIONS
+ * ============================================================================
+ *
+ * 1. Why is the function void instead of returning a value?
+ * ----------------------------------------------------------
+ * In C, when working with GPU memory, you can't return GPU pointers directly.
+ * Instead, you pass an output pointer as a parameter and modify it in place.
+ * This is standard C practice for avoiding memory allocation issues.
+ *
+ *
+ * 2. What does <<<1, 8>>> mean?
+ * ------------------------------
+ * This is CUDA's kernel launch syntax:
+ * - First number (1) = number of blocks
+ * - Second number (8) = threads per block
+ * - Total threads = 1 × 8 = 8 threads
+ *
+ *
+ * 3. Why do we need to copy memory between CPU and GPU?
+ * ------------------------------------------------------
+ * The CPU and GPU have separate physical RAM. CPU uses system RAM, GPU uses
+ * VRAM. They can't access each other's memory directly, so we must explicitly
+ * copy data between them.
+ */
 ```
 
 ### FAQ Guidelines
@@ -80,9 +80,9 @@ The CPU and GPU have separate physical RAM. CPU uses system RAM, GPU uses VRAM. 
 
 After answering user questions, **actively check if the conversation should be documented**:
 
-1. **Review existing FAQ files** - Check if this topic is already covered
+1. **Review existing FAQ section** - Check if this topic is already covered in the source file
 2. **Assess if it's documentable** - Did the user express confusion or uncertainty about a concept?
-3. **Offer to document it** - Don't wait for the user to ask. Proactively say: "Should I add this to the FAQ file?"
+3. **Offer to document it** - Don't wait for the user to ask. Proactively say: "Should I add this to the FAQ section?"
 4. **Think like a beginner** - Would someone new to GPU programming find this confusing? If yes, document it.
 
 **What to document:**
@@ -98,7 +98,7 @@ After answering user questions, **actively check if the conversation should be d
 **When user asks questions:**
 1. **Extract the essence** - rewrite question concisely to get to the core concept
 2. **Answer directly** - no fluff, just the answer
-3. **Add to appropriate FAQ file** - append new questions to existing file
+3. **Add to source file's FAQ section** - append new questions to the comment block
 4. **Number sequentially** - each question gets a number
 5. **Split multiple questions** - if user asks 3 things at once, create 3 separate numbered entries
 
@@ -169,7 +169,7 @@ The user will ask **many questions** about:
 
 - ✅ Show code examples
 - ✅ Explain "why" not just "what"
-- ✅ **Always update the corresponding FAQ file**
+- ✅ **Always update the FAQ section in the source file**
 - ❌ No excessive enthusiasm or fluff
 - ❌ No "great question!" preambles
 
@@ -212,8 +212,7 @@ The user will ask **many questions** about:
 - Asks questions freely - be patient and thorough
 - Appreciates **realistic use cases** over toy examples
 - Direct communication, no corporate-speak
-
-- Wants **FAQ files updated** as questions arise
+- Wants **FAQs documented in source code** as questions arise
 
 ## Common Pitfalls to Address
 
@@ -233,4 +232,4 @@ User should be able to:
 
 ---
 
-**Remember**: This user is sharp and learns fast, but GPU programming requires a mental shift from sequential to parallel thinking. Be patient with foundational questions while moving at their pace. **Always update FAQ files when questions are asked.**
+**Remember**: This user is sharp and learns fast, but GPU programming requires a mental shift from sequential to parallel thinking. Be patient with foundational questions while moving at their pace. **Always document questions in the source file's FAQ section.**
