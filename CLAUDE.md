@@ -76,10 +76,27 @@ The CPU and GPU have separate physical RAM. CPU uses system RAM, GPU uses VRAM. 
 
 ### FAQ Guidelines
 
+**IMPORTANT: Be Proactive About Documentation**
+
+After answering user questions, **actively check if the conversation should be documented**:
+
+1. **Review existing FAQ files** - Check if this topic is already covered
+2. **Assess if it's documentable** - Did the user express confusion or uncertainty about a concept?
+3. **Offer to document it** - Don't wait for the user to ask. Proactively say: "Should I add this to the FAQ file?"
+4. **Think like a beginner** - Would someone new to GPU programming find this confusing? If yes, document it.
+
+**What to document:**
+- ✅ Concepts the user actually asked about or was confused by
+- ✅ Syntax questions ("`__global__` means what?")
+- ✅ "Why" questions (why CPU/GPU memory separation?)
+- ✅ Installation issues or gotchas they encountered
+- ❌ Concepts the user didn't ask about (don't add extra noise)
+- ❌ Things that are obvious to the user already
+
+**The user may forget to ask for documentation** - be proactive and suggest it when appropriate.
 
 **When user asks questions:**
 1. **Extract the essence** - rewrite question concisely to get to the core concept
-
 2. **Answer directly** - no fluff, just the answer
 3. **Add to appropriate FAQ file** - append new questions to existing file
 4. **Number sequentially** - each question gets a number
