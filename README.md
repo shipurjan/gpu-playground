@@ -2,6 +2,12 @@
 
 Learning GPU programming through CUDA and WebGPU examples.
 
+## About This Repo
+
+This is a hands-on learning repository where I'm teaching myself GPU computing from scratch using [Claude Code](https://claude.com/claude-code). I ask questions about GPU concepts, CUDA syntax, and parallel programming patterns, and document the answers in `.faq.md` files alongside each example for future reference.
+
+The goal is to build intuition for GPU programming by starting with simple CUDA examples, then applying those concepts to WebGPU for browser-based 3D graphics.
+
 ## Structure
 
 
