@@ -52,4 +52,3 @@ npm run dev
 - [CUDA Programming Guide](https://docs.nvidia.com/cuda/cuda-c-programming-guide/)
 - [WebGPU Specification](https://www.w3.org/TR/webgpu/)
 - [WGSL Spec](https://www.w3.org/TR/WGSL/)
-```
