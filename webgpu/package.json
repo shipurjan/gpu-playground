@@ -5,6 +5,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
+    "lint:types": "tsc --noEmit",
     "serve": "http-server -p 8000 -o",
     "dev": "concurrently \"npm run watch\" \"npm run serve\""
   },

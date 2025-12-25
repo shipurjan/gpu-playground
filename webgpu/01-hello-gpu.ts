@@ -19,6 +19,7 @@ async function main(): Promise<void> {
     }
 
     const adapter: GPUAdapter | null = await navigator.gpu.requestAdapter();
+
     if (!adapter) {
         throw new Error('Failed to get GPU adapter');
     }
