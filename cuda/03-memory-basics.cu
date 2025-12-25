@@ -169,8 +169,8 @@ int main() {
 /*
  * HOW TO COMPILE AND RUN:
  *
- * nvcc 02-memory-basics.cu -o 02-memory-basics
- * ./02-memory-basics
+ * nvcc 03-memory-basics.cu -o 03-memory-basics
+ * ./03-memory-basics
  *
  * EXPECTED OUTPUT:
  * Shows step-by-step memory allocation, copying, and deallocation
