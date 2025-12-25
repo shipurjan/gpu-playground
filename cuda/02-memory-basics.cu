@@ -55,9 +55,44 @@ int main() {
     // free() - Deallocate memory on CPU
     // ============================================================
     // Always free what you malloc to avoid memory leaks
+    //
+    // What free() actually does:
+    // - Marks that memory as "available for reuse" by the system
+    // - Does NOT zero out the memory
+    // - Does NOT set the pointer to NULL
+    // - The pointer still holds the same address (now a "dangling pointer")
+    //
+    // After free(), accessing that memory is UNDEFINED BEHAVIOR:
+    // - Might still show old values (if memory hasn't been reused)
+    // - Might show garbage (if something else used that memory)
+    // - Might crash your program
+    // - Results are unpredictable!
+
+    printf("3. free() - what it actually does:\n");
+    printf("   Before free():\n");
+    printf("     Address: %p\n", (void*)cpu_copy);
+    printf("     Values:  [%d, %d, %d, %d, %d]\n",
+           cpu_copy[0], cpu_copy[1], cpu_copy[2], cpu_copy[3], cpu_copy[4]);
 
     free(cpu_copy);
-    printf("3. free() deallocated the copy from CPU memory\n\n");
+
+    printf("   After free():\n");
+    printf("     Address: %p (SAME! Pointer not set to NULL)\n", (void*)cpu_copy);
+    printf("     Values:  [%d, %d, %d, %d, %d] (UNDEFINED BEHAVIOR!)\n",
+           cpu_copy[0], cpu_copy[1], cpu_copy[2], cpu_copy[3], cpu_copy[4]);
+    printf("     ^ These might be old values, garbage, or cause a crash\n");
+    printf("     ^ Accessing freed memory is a BUG - don't do this!\n\n");
+
+    printf("   What free() did:\n");
+    printf("     - Told the OS: \"This memory can be reused\"\n");
+    printf("     - Did NOT zero out the memory\n");
+    printf("     - Did NOT set cpu_copy to NULL\n");
+    printf("     - Memory might get overwritten by other allocations\n\n");
+
+    printf("   Best practice after free():\n");
+    cpu_copy = NULL;  // Manually set to NULL to avoid dangling pointer
+    printf("     cpu_copy = NULL; // Now it's %p (safe!)\n", (void*)cpu_copy);
+    printf("     Accessing NULL will crash immediately (better than undefined behavior)\n\n");
 
     printf("=== PART 2: CUDA Memory Management (CPU + GPU) ===\n\n");
 
