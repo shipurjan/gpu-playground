@@ -1,0 +1,16 @@
+# Ignore compiled CUDA binaries (files without extensions in cuda/)
+cuda/*
+!cuda/*.*
+!cuda/*/
+
+# Ignore compiled WebGPU outputs
+webgpu/dist/
+webgpu/node_modules/
+webgpu/*.js
+webgpu/*.js.map
+
+# General
+.DS_Store
+*.swp
+*.swo
+*~
