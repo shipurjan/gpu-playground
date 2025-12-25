@@ -62,6 +62,9 @@ sudo cp /var/cuda-repo-wsl-ubuntu-13-1-local/cuda-*-keyring.gpg /usr/share/keyri
 # Update and install CUDA
 sudo apt-get update
 sudo apt-get -y install cuda-toolkit-13-1
+
+# Clean up the downloaded .deb file
+rm cuda-repo-wsl-ubuntu-13-1-local_13.1.0-1_amd64.deb
 ```
 
 **Note about `cuda-toolkit-13-1`:** This installs CUDA 13.1 specifically and prevents automatic upgrades to 13.2, 14.0, etc. If you want automatic updates to the latest version, use `cuda-toolkit` instead (not recommended for learning).
@@ -102,9 +105,10 @@ nvcc --version
 You should see output like:
 ```
 nvcc: NVIDIA (R) Cuda compiler driver
-Copyright (c) 2005-2023 NVIDIA Corporation
-Built on ...
-Cuda compilation tools, release 13.1, V13.1.X
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Fri_Nov__7_07:23:37_PM_PST_2025
+Cuda compilation tools, release 13.1, V13.1.80
+Build cuda_13.1.r13.1/compiler.36836380_0
 ```
 
 ## Step 5: Test with Hello World Example
