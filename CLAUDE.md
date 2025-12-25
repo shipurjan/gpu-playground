@@ -111,12 +111,21 @@ After answering user questions, **actively check if the conversation should be d
 
 **The user may forget to ask for documentation** - be proactive and suggest it when appropriate.
 
+**Inline comments vs FAQ:**
+- **Questions about specific lines of code** → Add inline comment near that line
+  - Example: "Why do we check `if (i < size)` on line 28?"
+  - Action: Add comment above/near line 28 explaining the bounds check
+- **Questions about broader concepts** → Add to FAQ section
+  - Example: "What are the limitations of GPU threads?"
+  - Action: Add new FAQ entry with comprehensive explanation
+
 **When user asks questions:**
-1. **Extract the essence** - rewrite question concisely to get to the core concept
-2. **Answer directly** - no fluff, just the answer
-3. **Add to source file's FAQ section** - append new questions to the comment block
-4. **Number sequentially** - each question gets a number
-5. **Split multiple questions** - if user asks 3 things at once, create 3 separate numbered entries
+1. **Determine location** - Is this about a specific line or a general concept?
+2. **Extract the essence** - rewrite question concisely to get to the core concept
+3. **Answer directly** - no fluff, just the answer
+4. **Add inline comment OR FAQ entry** - depending on whether it's line-specific or conceptual
+5. **Number sequentially** - (for FAQ entries) each question gets a number
+6. **Split multiple questions** - if user asks 3 things at once, create 3 separate entries
 
 **Example transformation:**
 
