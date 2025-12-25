@@ -60,11 +60,11 @@ int main() {
     printf("   **ptr_ptr = %d (dereferences twice -> gets number)\n\n", **ptr_ptr);
 
     printf("=== Memory Layout Visualization ===\n");
-    printf("   number:     [  42  ] at address %p\n", (void*)&number);
-    printf("   ptr:        [  %p  ] at address %p\n", (void*)ptr, (void*)&ptr);
     printf("   ptr_ptr:    [  %p  ] at address %p\n", (void*)ptr_ptr, (void*)&ptr_ptr);
-    printf("                  ↓ points to\n");
-    printf("                  ↓ points to number\n\n");
+    printf("                  ↓ points to ptr\n");
+    printf("   ptr:        [  %p  ] at address %p\n", (void*)ptr, (void*)&ptr);
+    printf("                  ↓ points to number\n");
+    printf("   number:     [  42  ] at address %p\n\n", (void*)&number);
 
     printf("=== PART 2: The & and * Operators ===\n\n");
 
