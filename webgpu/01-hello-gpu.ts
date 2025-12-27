@@ -120,3 +120,5 @@ main().catch(err => {
         output.textContent = 'Error: ' + err.message;
     }
 });
+
+export {};

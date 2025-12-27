@@ -13,6 +13,12 @@
             line-height: 1.6;
         }
         h1 { color: #333; }
+        h2 { color: #555; margin-top: 40px; }
+        #gpuCanvas {
+            border: 2px solid #333;
+            display: block;
+            margin: 20px auto;
+        }
         #output {
             margin-top: 20px;
             padding: 15px;
@@ -20,13 +26,32 @@
             border-radius: 4px;
             border-left: 4px solid #0066cc;
         }
+        .example {
+            margin-bottom: 60px;
+            padding-bottom: 40px;
+            border-bottom: 2px solid #ddd;
+        }
+        .example:last-child {
+            border-bottom: none;
+        }
     </style>
 </head>
 <body>
-    <h1>01 - Hello GPU (WebGPU)</h1>
-    <div id="output">Initializing WebGPU...</div>
+    <h1>WebGPU Examples</h1>
+
+    <div class="example">
+        <h2>01 - Hello GPU</h2>
+        <div id="output">Initializing WebGPU...</div>
+    </div>
+
+    <div class="example">
+        <h2>02 - Canvas Triangle</h2>
+        <canvas id="gpuCanvas" width="512" height="512"></canvas>
+        <div id="output2">Rendering triangle...</div>
+    </div>
 
     <!-- Load compiled TypeScript -->
     <script type="module" src="dist/01-hello-gpu.js"></script>
+    <script type="module" src="dist/02-canvas-triangle.js"></script>
 </body>
 </html>
