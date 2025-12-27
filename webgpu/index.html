@@ -1,57 +1,204 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebGPU Examples</title>
-    <style>
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 0 20px;
-            line-height: 1.6;
-        }
-        h1 { color: #333; }
-        h2 { color: #555; margin-top: 40px; }
-        #gpuCanvas {
-            border: 2px solid #333;
-            display: block;
-            margin: 20px auto;
-        }
-        #output {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f5f5f5;
-            border-radius: 4px;
-            border-left: 4px solid #0066cc;
-        }
-        .example {
-            margin-bottom: 60px;
-            padding-bottom: 40px;
-            border-bottom: 2px solid #ddd;
-        }
-        .example:last-child {
-            border-bottom: none;
-        }
-    </style>
-</head>
-<body>
-    <h1>WebGPU Examples</h1>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>WebGPU basic examples</title>
+        <style>
+            body {
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                max-width: 800px;
+                margin: 40px auto;
+                padding: 0 20px;
+                line-height: 1.6;
+            }
+            h1 {
+                color: #333;
+            }
+            h2 {
+                color: #555;
+                margin-top: 40px;
+            }
+            #gpuCanvas {
+                border: 2px solid #333;
+                display: block;
+                margin: 20px 0;
+            }
+            .example {
+                margin-bottom: 60px;
+                padding-bottom: 40px;
+                border-bottom: 2px solid #ddd;
+            }
+            .example:last-child {
+                border-bottom: none;
+            }
+            .intro {
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 6px;
+                border-left: 4px solid #0066cc;
+            }
+            .intro summary {
+                cursor: pointer;
+                font-size: 1.3em;
+                font-weight: bold;
+                color: #0066cc;
+                user-select: none;
+            }
+            .intro summary:hover {
+                color: #0052a3;
+            }
+            .intro p {
+                margin: 10px 0;
+            }
+            .intro ul {
+                margin: 10px 0;
+                padding-left: 25px;
+            }
+            .intro strong {
+                color: #333;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>WebGPU basic examples</h1>
 
-    <div class="example">
-        <h2>01 - Hello GPU</h2>
-        <div id="output">Initializing WebGPU...</div>
-    </div>
+        <details class="intro">
+            <summary>What is WebGPU?</summary>
+            <p>
+                <strong>WebGPU</strong> is a modern web standard for GPU
+                computing and graphics, released in 2023 after 6+ years of
+                development by W3C. It's the successor to
+                <strong>WebGL</strong> (2011), which was based on OpenGL ES
+                2.0—a mobile graphics API from 2007.
+            </p>
 
-    <div class="example">
-        <h2>02 - Canvas Triangle</h2>
-        <canvas id="gpuCanvas" width="512" height="512"></canvas>
-        <div id="output2">Rendering triangle...</div>
-    </div>
+            <p><strong>Why WebGPU was created:</strong></p>
+            <ul>
+                <li>
+                    <strong>WebGL is outdated</strong> - Based on 2007
+                    technology, missing modern GPU features (compute shaders,
+                    better memory control)
+                </li>
+                <li>
+                    <strong>Performance</strong> - WebGL has high CPU overhead;
+                    WebGPU is designed around modern low-level APIs (Vulkan,
+                    Metal, DirectX 12)
+                </li>
+                <li>
+                    <strong>General compute</strong> - WebGL is graphics-only;
+                    WebGPU adds compute shaders for ML, physics, data processing
+                </li>
+                <li>
+                    <strong>Better APIs</strong> - Explicit control over GPU
+                    resources, async operations, multi-threading support
+                </li>
+            </ul>
 
-    <!-- Load compiled TypeScript -->
-    <script type="module" src="dist/01-hello-gpu.js"></script>
-    <script type="module" src="dist/02-canvas-triangle.js"></script>
-</body>
+            <p><strong>Is it mature?</strong></p>
+            <ul>
+                <li>
+                    <strong>Official W3C standard (2023)</strong> - Stable
+                    specification, production-ready
+                </li>
+                <li>
+                    <strong>Browser support</strong>:
+                    <ul>
+                        <li>✅ Chrome/Edge 113+ (2023)</li>
+                        <li>✅ Safari 18+ (2024)</li>
+                        <li>⚠️ Firefox: In development (use Chrome for now)</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Adoption</strong> - Used by Google Maps, Figma,
+                    Babylon.js, Three.js, TensorFlow.js
+                </li>
+                <li>
+                    <strong>Still newer than WebGL</strong> - Fewer
+                    tutorials/libraries, but rapidly growing
+                </li>
+            </ul>
+
+            <p><strong>Should you use WebGPU or WebGL?</strong></p>
+            <ul>
+                <li>
+                    <strong>Use WebGPU if:</strong> Building new projects, need
+                    compute shaders, want modern performance, targeting
+                    Chrome/Safari
+                </li>
+                <li>
+                    <strong>Use WebGL if:</strong> Need Firefox support right
+                    now, have existing WebGL codebase, targeting older browsers
+                </li>
+            </ul>
+
+            <p><strong>Why use WebGPU at all?</strong></p>
+            <ul>
+                <li>
+                    <strong>Cross-platform GPU access</strong> - Works on
+                    Windows, Mac, Linux, Android, iOS (no native installation
+                    needed)
+                </li>
+                <li>
+                    <strong>Web deployment</strong> - Ship GPU apps as websites
+                    (easier than native distribution)
+                </li>
+                <li>
+                    <strong>Learning GPU programming</strong> - Easier setup
+                    than CUDA (no driver installs), more portable than
+                    platform-specific APIs
+                </li>
+                <li>
+                    <strong>Real applications</strong> - 3D graphics, AI/ML
+                    inference, image/video processing, physics simulations, data
+                    visualization
+                </li>
+            </ul>
+
+            <p>
+                <strong>Bottom line:</strong> WebGPU is the modern, standard
+                choice for web-based GPU work. It's production-ready in
+                Chrome/Safari and actively replacing WebGL in major
+                applications.
+            </p>
+        </details>
+
+        <div class="example">
+            <h2>01 - Hello GPU</h2>
+            <div id="output">Initializing WebGPU...</div>
+        </div>
+
+        <div class="example">
+            <h2>02 - Canvas Triangle</h2>
+            <canvas id="gpuCanvas" width="512" height="512"></canvas>
+            <div id="output2">Rendering triangle...</div>
+        </div>
+
+        <div class="example">
+            <h2>03 - Rotating Triangle</h2>
+            <canvas id="gpuCanvas2" width="512" height="512"></canvas>
+            <div id="output3">Starting animation...</div>
+        </div>
+
+        <div class="example">
+            <h2>04 - Rotating Cube (3D)</h2>
+            <canvas id="gpuCanvas3" width="512" height="512"></canvas>
+            <div id="output4">Rendering 3D cube...</div>
+        </div>
+
+        <div class="example">
+            <h2>05 - WGSL Language Reference</h2>
+            <div id="output5">Loading reference guide...</div>
+        </div>
+
+        <!-- Load compiled TypeScript -->
+        <script type="module" src="dist/01-hello-gpu.js"></script>
+        <script type="module" src="dist/02-canvas-triangle.js"></script>
+        <script type="module" src="dist/03-rotating-triangle.js"></script>
+        <script type="module" src="dist/04-rotating-cube.js"></script>
+        <script type="module" src="dist/05-wgsl-reference.js"></script>
+    </body>
 </html>

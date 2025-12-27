@@ -42,12 +42,13 @@ async function main(): Promise<void> {
     });
 
     // ===== 3. Define triangle vertices =====
-    // 3 corners in clip space coordinates: x, y (range -1 to +1)
-    // Top center, bottom left, bottom right
+    // Equilateral triangle centered at origin
+    // Side length = 1, height = sqrt(3)/2 ≈ 0.866
+    const h = Math.sqrt(3) / 2;
     const vertices = new Float32Array([
-         0.0,  0.5,  // Top (x, y)
-        -0.5, -0.5,  // Bottom left
-         0.5, -0.5,  // Bottom right
+         0.0,    2 * h / 3,  // Top (centered)
+        -0.5,   -h / 3,      // Bottom left
+         0.5,   -h / 3,      // Bottom right
     ]);
 
     // ===== 4. Create vertex buffer (GPU memory for triangle data) =====
