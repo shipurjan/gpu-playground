@@ -40,17 +40,10 @@ async function main(): Promise<void> {
         usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
     });
 
-    // ===== 3. Create compute shader =====
+    // ===== 3. Load compute shader from file =====
     // WGSL (WebGPU Shading Language) - similar to CUDA but different syntax
-    const shaderCode: string = `
-        @group(0) @binding(0) var<storage, read_write> output: u32;
-
-        @compute @workgroup_size(1)  // 1 thread (like CUDA <<<1, 1>>>)
-        fn main() {
-            // This runs on the GPU!
-            output = 42u;  // Write the answer to everything
-        }
-    `;
+    // Fetch shader code from separate .wgsl file
+    const shaderCode: string = await fetch('01-hello-gpu.wgsl').then(r => r.text());
 
     const shaderModule: GPUShaderModule = device.createShaderModule({
         code: shaderCode
